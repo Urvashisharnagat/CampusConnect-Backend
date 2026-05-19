@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
-const businessConroller = require("../controllers/business.controller");
+const businessController = require("../controllers/business.controller");
 const authMiddle = require("../middleware/role.middleware");
-const authuser = require("../middleware/auth.middleware")
 
 
-router.post("/create", authMiddle.authBusiness, businessConroller.createBusinessProfile);
-router.get("/",authuser,businessConroller.getAllBusinesses);
-router.get("/match/:eventId",businessConroller.getMatchedBusinesses);
+router.post("/create", authMiddle.authBusiness, businessController.createBusinessProfile);
+router.get("/",authMiddle.authBusiness,businessController.getAllBusinesses);
+router.get("/match/:eventId",authMiddle.authOrganizer,businessController.getMatchedBusinesses);
+router.get("/ai-match/:eventId",authMiddle.authOrganizer,businessController.getAIMatchedBusinesses);
 
 module.exports = router;

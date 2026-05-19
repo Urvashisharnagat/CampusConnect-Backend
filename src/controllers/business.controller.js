@@ -1,5 +1,6 @@
 const businessModel = require("../models/business.model");
 const eventModel = require("../models/event.model");
+const model = require("../utils/aiHelper");
 
 async function createBusinessProfile(req, res) {
   try {
@@ -75,8 +76,52 @@ async function getMatchedBusinesses(req, res) {
   }
 }
 
+async function getAIMatchedBusinesses(req, res) {
+  try {
+    const event = await eventModel.findById(req.params.eventId);
+
+    if (!event) {
+      return res.status(404).json({
+        message: "Event not found"
+      });
+    }
+
+    const businesses = await businessModel.find();
+
+    const prompt = `
+Suggest the best matching sponsors for this event.
+
+Event Details:
+Title: ${event.title}
+Category: ${event.category}
+Location: ${event.location}
+Audience Size: ${event.audienceSize}
+Description: ${event.description}
+
+Available Businesses:
+${JSON.stringify(businesses)}
+
+Return top matching businesses with reasons.
+`;
+
+    const result = await model.generateContent(prompt);
+
+    const response = result.response.text();
+
+    res.status(200).json({
+      aiRecommendations: response
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
+}
+
 module.exports = {
   createBusinessProfile,
   getAllBusinesses,
-  getMatchedBusinesses
+  getMatchedBusinesses,
+  getAIMatchedBusinesses
 };
