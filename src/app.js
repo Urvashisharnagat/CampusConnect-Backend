@@ -4,9 +4,17 @@ const eventroutes = require('./routes/event.route')
 const requestroute  =require('./routes/request.route')
 const businessroute = require('./routes/business.routes')
 const cookieParser = require('cookie-parser')
+const cors = require("cors");
 
+const app = express();
 
-const app = express()
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true
+  })
+);
+
 app.use(express.json())
 app.use(cookieParser())
 

@@ -51,4 +51,20 @@ async function getMyEvents(req, res) {
   }
 }
 
-module.exports = { createEvent,getMyEvents};
+async function getAllEvents(req, res) {
+
+  try {
+
+    const events = await eventModel.find();
+
+    res.status(200).json(events);
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+  }
+}
+
+module.exports = { createEvent,getMyEvents,getAllEvents};
